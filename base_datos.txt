@@ -1,0 +1,580 @@
+Microsoft Windows [Versión 10.0.22621.3447]
+(c) Microsoft Corporation. Todos los derechos reservados.
+
+C:\Users\santi>cd..
+
+C:\Users>cd..
+
+C:\>dir
+ El volumen de la unidad C es Windows
+ El número de serie del volumen es: A025-E3A0
+
+ Directorio de C:\
+
+07/05/2022  12:24 a. m.    <DIR>          PerfLogs
+08/05/2024  06:44 p. m.    <DIR>          Program Files
+19/01/2024  06:22 p. m.    <DIR>          Program Files (x86)
+08/08/2023  11:36 p. m.    <DIR>          SQL2022
+04/01/2023  06:45 p. m.    <DIR>          SWSetup
+07/10/2022  05:51 a. m.    <DIR>          Users
+11/04/2024  10:10 p. m.    <DIR>          Windows
+08/04/2023  08:49 p. m.    <DIR>          xampp
+               0 archivos              0 bytes
+               8 dirs  166.118.699.008 bytes libres
+
+C:\>xampp
+"xampp" no se reconoce como un comando interno o externo,
+programa o archivo por lotes ejecutable.
+
+C:\>cd xampp
+
+C:\xampp>cd mysql
+
+C:\xampp\mysql>cd bin
+
+C:\xampp\mysql\bin>mysql -u root -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 9
+Server version: 10.4.27-MariaDB mariadb.org binary distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> create database constructora;
+ERROR 1007 (HY000): Can't create database 'constructora'; database exists
+MariaDB [(none)]> use constructora;
+Database changed
+MariaDB [constructora]> create table cliente(
+    ->   id_cliente number(10) primary key not null,
+    ->   nombre_cliente varchar(50) not null,
+    ->   tipo_documento varchar(50) not null,
+    ->   numero_documento number(20) not null,
+    ->   estado_civil varchar(100) not null);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '(10) primary key not null,
+  nombre_cliente varchar(50) not null,
+  tipo_docu...' at line 2
+MariaDB [constructora]> create table cliente(
+    ->   id_cliente int primary key not null,
+    ->   nombre_cliente varchar(50) not null,
+    ->   tipo_documento varchar(50) not null,
+    ->   numero_documento int not null,
+    ->   estado_civil varchar(100) not null);
+Query OK, 0 rows affected (0.019 sec)
+
+MariaDB [constructora]> create table prorrata(
+    ->   id_prorrata int primary key not null,
+    ->   valor_prorrata int not null,
+    ->   valor_prorrata_letra varchar(500) not null);
+Query OK, 0 rows affected (0.023 sec)
+
+MariaDB [constructora]> create table constructora(
+    ->   id_constructora int primary key not null,
+    ->   nombre_constructora varchar(20) not null,
+    ->   nit_constructora int not null);
+Query OK, 0 rows affected (0.019 sec)
+
+MariaDB [constructora]> create table inmueble(
+    ->   id_inmueble varchar(20) primary key not null,
+    ->   numero_aptasuite varchar(20) not null,
+    ->   coeficiente int not null,
+    ->   linderos varchar(500) not null,
+    ->   FK_id_prorrata int not null,
+    ->   constraint FK_id_prorrata_1 foreign key(FK_id_prorrata) references prorrata (PK_id_prorrata));
+ERROR 1005 (HY000): Can't create table `constructora`.`inmueble` (errno: 150 "Foreign key constraint is incorrectly formed")
+MariaDB [constructora]>
+MariaDB [constructora]> create table inmueble(
+    ->   id_inmueble varchar(20) primary key not null,
+    ->   numero_aptasuite varchar(20) not null,
+    ->   coeficiente int not null,
+    ->   linderos varchar(500) not null,
+    ->   FK_id_prorrata int not null,
+    ->   constraint FK_id_prorrata_1 foreign key(FK_id_prorrata) references prorrata (id_prorrata));
+Query OK, 0 rows affected (0.036 sec)
+
+MariaDB [constructora]>
+MariaDB [constructora]> create table venta(
+    ->   id_venta int primary key not null,
+    ->   valor_venta int not null,
+    ->   valor_recibido int not null
+    ->   constraint FK_id_cliente_1 foreign key(FK_id_cliente) references cliente (id_cliente),
+    ->   constraint FK_id_inmueble_1 foreign key(FK_id_inmueble) references inmueble (id_inmueble)
+    ->   constraint FK_id_constructora_1 foreign key(FK_id_constructora) references constructora (id_constructora));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'constraint FK_id_cliente_1 foreign key(FK_id_cliente) references cliente (id_...' at line 5
+MariaDB [constructora]> create table venta(
+    ->   id_venta int primary key not null,
+    ->   valor_venta int not null,
+    ->   valor_recibido int not null
+    ->   constraint FK_id_cliente_1 foreign key(FK_id_cliente) references cliente (id_cliente)
+    ->   constraint FK_id_inmueble_1 foreign key(FK_id_inmueble) references inmueble (id_inmueble)
+    ->   constraint FK_id_constructora_1 foreign key(FK_id_constructora) references constructora (id_constructora));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'constraint FK_id_cliente_1 foreign key(FK_id_cliente) references cliente (id_...' at line 5
+MariaDB [constructora]> create table venta(
+    ->   id_venta int primary key not null,
+    ->   valor_venta int not null,
+    ->   valor_recibido int not null
+    ->   constraint FK_id_cliente_1 foreign key(FK_id_cliente) references cliente (id_cliente),
+    ->   constraint FK_id_inmueble_1 foreign key(FK_id_inmueble) references inmueble (id_inmueble),
+    ->   constraint FK_id_constructora_1 foreign key(FK_id_constructora) references constructora (id_constructora));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'constraint FK_id_cliente_1 foreign key(FK_id_cliente) references cliente (id_...' at line 5
+MariaDB [constructora]> create table venta(
+    ->   id_venta int primary key not null,
+    ->   valor_venta int not null,
+    ->   valor_recibido int not null,
+    ->   FK_id_cliente int not null,
+    ->   FK_id_inmueble int not null,
+    ->   FK_id_constructora int not null,
+    ->   constraint FK_id_cliente_1 foreign key(FK_id_cliente) references cliente (id_cliente),
+    ->   constraint FK_id_inmueble_1 foreign key(FK_id_inmueble) references inmueble (id_inmueble),
+    ->   constraint FK_id_constructora_1 foreign key(FK_id_constructora) references constructora (id_constructora));
+ERROR 1005 (HY000): Can't create table `constructora`.`venta` (errno: 150 "Foreign key constraint is incorrectly formed")
+MariaDB [constructora]> create table venta(
+    ->   id_venta int primary key not null,
+    ->   valor_venta int not null,
+    ->   valor_recibido int not null,
+    ->   FK_id_cliente int not null,
+    ->   FK_id_inmueble int not null,
+    ->   FK_id_constructora int not null,
+    ->   constraint FK_id_cliente_1 foreign key(FK_id_cliente) references cliente (id_cliente)
+    ->   constraint FK_id_inmueble_1 foreign key(FK_id_inmueble) references inmueble (id_inmueble)
+    ->   constraint FK_id_constructora_1 foreign key(FK_id_constructora) references constructora (id_constructora));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'constraint FK_id_inmueble_1 foreign key(FK_id_inmueble) references inmueble (...' at line 9
+MariaDB [constructora]> drop table inmueble
+    -> ;
+Query OK, 0 rows affected (0.098 sec)
+
+MariaDB [constructora]> create table inmueble(
+    ->   id_inmueble int primary key not null,
+    ->   numero_aptasuite varchar(20) not null,
+    ->   coeficiente int not null,
+    ->   linderos varchar(500) not null,
+    ->   FK_id_prorrata int not null,
+    ->   constraint FK_id_prorrata_1 foreign key(FK_id_prorrata) references prorrata (id_prorrata));
+Query OK, 0 rows affected (0.037 sec)
+
+MariaDB [constructora]>
+MariaDB [constructora]> create table venta(
+    ->   id_venta int primary key not null,
+    ->   valor_venta int not null,
+    ->   valor_recibido int not null,
+    ->   FK_id_cliente int not null,
+    ->   FK_id_inmueble int not null,
+    ->   FK_id_constructora int not null,
+    ->   constraint FK_id_cliente_1 foreign key(FK_id_cliente) references cliente (id_cliente),
+    ->   constraint FK_id_inmueble_1 foreign key(FK_id_inmueble) references inmueble (id_inmueble),
+    ->   constraint FK_id_constructora_1 foreign key(FK_id_constructora) references constructora (id_constructora));
+Query OK, 0 rows affected (0.034 sec)
+
+MariaDB [constructora]> show databases;
++---------------------+
+| Database            |
++---------------------+
+| base_concesionario  |
+| base_libros         |
+| base_peliculas      |
+| concesionario       |
+| constructora        |
+| fabrica             |
+| information_schema  |
+| inmobiliaria        |
+| inventario bar m&s  |
+| inventarioventas    |
+| libros              |
+| lugares             |
+| municipios          |
+| mysql               |
+| performance_schema  |
+| phpmyadmin          |
+| proyecto_final      |
+| prueba              |
+| pruebaok            |
+| sistemadeventas     |
+| sistemainmobiliaria |
+| test                |
+| venta_vehiculos     |
++---------------------+
+23 rows in set (0.095 sec)
+
+MariaDB [constructora]> select * from constructora;
+Empty set (0.002 sec)
+
+MariaDB [constructora]> desc constructora;
++---------------------+-------------+------+-----+---------+-------+
+| Field               | Type        | Null | Key | Default | Extra |
++---------------------+-------------+------+-----+---------+-------+
+| id_constructora     | int(11)     | NO   | PRI | NULL    |       |
+| nombre_constructora | varchar(20) | NO   |     | NULL    |       |
+| nit_constructora    | int(11)     | NO   |     | NULL    |       |
++---------------------+-------------+------+-----+---------+-------+
+3 rows in set (0.019 sec)
+
+MariaDB [constructora]> insert into cliente values (1,'Santiago Vega','CC',10101010,'SOLTERO');
+Query OK, 1 row affected (0.005 sec)
+
+MariaDB [constructora]> select * from cliente;
++------------+----------------+----------------+------------------+--------------+
+| id_cliente | nombre_cliente | tipo_documento | numero_documento | estado_civil |
++------------+----------------+----------------+------------------+--------------+
+|          1 | Santiago Vega  | CC             |         10101010 | SOLTERO      |
++------------+----------------+----------------+------------------+--------------+
+1 row in set (0.001 sec)
+
+MariaDB [constructora]> insert into cliente values (2,'ANDRES FELIPE RODRIGUEZ MICOLTA','CC',80135124,'SOLTERO');
+Query OK, 1 row affected (0.003 sec)
+
+MariaDB [constructora]> insert into cliente values (3,'ANDRES FELIPE RODRIGUEZ MICOLTA','CE',787412,'SOLTERO');
+Query OK, 1 row affected (0.009 sec)
+
+MariaDB [constructora]> insert into prorrata values (1,'2941500','DOS MILLONES NOVECIENTOS CUARENTA Y UN MIL QUINIENTOS PESOS');
+Query OK, 1 row affected (0.010 sec)
+
+MariaDB [constructora]> insert into prorrata values (2,'2941500','DOS MILLONES NOVECIENTOS CUARENTA Y UN MIL QUINIENTOS PESOS');
+Query OK, 1 row affected (0.009 sec)
+
+MariaDB [constructora]> insert into prorrata values (3,'2941500','DOS MILLONES NOVECIENTOS CUARENTA Y UN MIL QUINIENTOS PESOS');
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [constructora]> select * from prorrata;
++-------------+----------------+-------------------------------------------------------------+
+| id_prorrata | valor_prorrata | valor_prorrata_letra                                        |
++-------------+----------------+-------------------------------------------------------------+
+|           1 |        2941500 | DOS MILLONES NOVECIENTOS CUARENTA Y UN MIL QUINIENTOS PESOS |
+|           2 |        2941500 | DOS MILLONES NOVECIENTOS CUARENTA Y UN MIL QUINIENTOS PESOS |
+|           3 |        2941500 | DOS MILLONES NOVECIENTOS CUARENTA Y UN MIL QUINIENTOS PESOS |
++-------------+----------------+-------------------------------------------------------------+
+3 rows in set (0.001 sec)
+
+MariaDB [constructora]> insert into constructora values (1,'DGRD',900.555.111-1);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '.111-1)' at line 1
+MariaDB [constructora]> insert into constructora values (1,'DGRD',9005551111);
+Query OK, 1 row affected, 1 warning (0.009 sec)
+
+MariaDB [constructora]> insert into constructora values (2,'AMARILO',8003211239);
+Query OK, 1 row affected, 1 warning (0.009 sec)
+
+MariaDB [constructora]> insert into constructora values (3,'BOLIVAR',9023335554);
+Query OK, 1 row affected, 1 warning (0.010 sec)
+
+MariaDB [constructora]> Bye
+Ctrl-C -- exit!
+
+C:\xampp\mysql\bin>insert into categoria values (1,'1523',00164,' Área construida total: CUARENTA Y TRES METROS CUADRADOS (43 M²)',1);
+"insert" no se reconoce como un comando interno o externo,
+programa o archivo por lotes ejecutable.
+
+C:\xampp\mysql\bin>
+
+C:\xampp\mysql\bin>
+
+C:\xampp\mysql\bin>C:\xampp\mysql\bin>mysql -u root -p
+"C:\xampp\mysql\bin" no se reconoce como un comando interno o externo,
+programa o archivo por lotes ejecutable.
+
+C:\xampp\mysql\bin>mysql -u root -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 10
+Server version: 10.4.27-MariaDB mariadb.org binary distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> use constructora
+Database changed
+MariaDB [constructora]> insert into categoria values (1,'1523',00164,' Área construida total: CUARENTA Y TRES METROS CUADRADOS (43 M²)',1);
+ERROR 1146 (42S02): Table 'constructora.categoria' doesn't exist
+MariaDB [constructora]> insert into inmueble values (1,'1523',00164,' Área construida total: CUARENTA Y TRES METROS CUADRADOS (43 M²)',1);
+Query OK, 1 row affected (0.010 sec)
+
+MariaDB [constructora]> insert into inmueble values (2,'1331',164,' Área construida total: CUARENTA Y TRES METROS CUADRADOS (43 M²)',2);
+Query OK, 1 row affected (0.009 sec)
+
+MariaDB [constructora]> insert into inmueble values (3,'822',164,' Área construida total: CUARENTA Y TRES METROS CUADRADOS (43 M²)',3);
+Query OK, 1 row affected (0.009 sec)
+
+MariaDB [constructora]> insert into venta values (1,326000000,97800000,1,1,1);
+Query OK, 1 row affected (0.011 sec)
+
+MariaDB [constructora]> insert into venta values (2,215000000,215000000,2,2,2);
+Query OK, 1 row affected (0.008 sec)
+
+MariaDB [constructora]> insert into venta values (3,213495000,213495000,3,3,3);
+Query OK, 1 row affected (0.009 sec)
+
+MariaDB [constructora]> select * from venta;
++----------+-------------+----------------+---------------+----------------+--------------------+
+| id_venta | valor_venta | valor_recibido | FK_id_cliente | FK_id_inmueble | FK_id_constructora |
++----------+-------------+----------------+---------------+----------------+--------------------+
+|        1 |   326000000 |       97800000 |             1 |              1 |                  1 |
+|        2 |   215000000 |      215000000 |             2 |              2 |                  2 |
+|        3 |   213495000 |      213495000 |             3 |              3 |                  3 |
++----------+-------------+----------------+---------------+----------------+--------------------+
+3 rows in set (0.001 sec)
+
+
+Microsoft Windows [Versión 10.0.22621.3447]
+(c) Microsoft Corporation. Todos los derechos reservados.
+
+C:\Users\santi>cd..
+
+C:\Users>cd..
+
+C:\>dir
+ El volumen de la unidad C es Windows
+ El número de serie del volumen es: A025-E3A0
+
+ Directorio de C:\
+
+07/05/2022  12:24 a. m.    <DIR>          PerfLogs
+21/05/2024  08:15 p. m.    <DIR>          Program Files
+21/05/2024  09:05 p. m.    <DIR>          Program Files (x86)
+08/08/2023  11:36 p. m.    <DIR>          SQL2022
+04/01/2023  06:45 p. m.    <DIR>          SWSetup
+07/10/2022  05:51 a. m.    <DIR>          Users
+11/04/2024  10:10 p. m.    <DIR>          Windows
+08/04/2023  08:49 p. m.    <DIR>          xampp
+               0 archivos              0 bytes
+               8 dirs  171.197.153.280 bytes libres
+
+C:\>cd xampp
+
+C:\xampp>cd mysql
+
+C:\xampp\mysql>cd bin
+
+C:\xampp\mysql\bin>mysql -u root -p
+Enter password:
+ERROR 2002 (HY000): Can't connect to MySQL server on 'localhost' (10061)
+
+C:\xampp\mysql\bin>mysql -u root -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 8
+Server version: 10.4.27-MariaDB mariadb.org binary distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> use constructora;
+Database changed
+MariaDB [constructora]> select * from venta;
++----------+-------------+----------------+---------------+----------------+--------------------+
+| id_venta | valor_venta | valor_recibido | FK_id_cliente | FK_id_inmueble | FK_id_constructora |
++----------+-------------+----------------+---------------+----------------+--------------------+
+|        1 |   326000000 |       97800000 |             1 |              1 |                  1 |
+|        2 |   215000000 |      215000000 |             2 |              2 |                  2 |
+|        3 |   213495000 |      213495000 |             3 |              3 |                  3 |
++----------+-------------+----------------+---------------+----------------+--------------------+
+3 rows in set (0.073 sec)
+
+MariaDB [constructora]> update venta set valor_venta = 2500000 where id_venta = 3;
+Query OK, 1 row affected (0.008 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [constructora]> select * from venta;
++----------+-------------+----------------+---------------+----------------+--------------------+
+| id_venta | valor_venta | valor_recibido | FK_id_cliente | FK_id_inmueble | FK_id_constructora |
++----------+-------------+----------------+---------------+----------------+--------------------+
+|        1 |   326000000 |       97800000 |             1 |              1 |                  1 |
+|        2 |   215000000 |      215000000 |             2 |              2 |                  2 |
+|        3 |     2500000 |      213495000 |             3 |              3 |                  3 |
++----------+-------------+----------------+---------------+----------------+--------------------+
+3 rows in set (0.000 sec)
+
+MariaDB [constructora]> update venta set valor_venta = 250000000 where id_venta = 3;
+Query OK, 1 row affected (0.008 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [constructora]> select * from venta;
++----------+-------------+----------------+---------------+----------------+--------------------+
+| id_venta | valor_venta | valor_recibido | FK_id_cliente | FK_id_inmueble | FK_id_constructora |
++----------+-------------+----------------+---------------+----------------+--------------------+
+|        1 |   326000000 |       97800000 |             1 |              1 |                  1 |
+|        2 |   215000000 |      215000000 |             2 |              2 |                  2 |
+|        3 |   250000000 |      213495000 |             3 |              3 |                  3 |
++----------+-------------+----------------+---------------+----------------+--------------------+
+3 rows in set (0.000 sec)
+
+MariaDB [constructora]> select * from constructora;
++-----------------+---------------------+------------------+
+| id_constructora | nombre_constructora | nit_constructora |
++-----------------+---------------------+------------------+
+|               1 | DGRD                |       2147483647 |
+|               2 | AMARILO             |       2147483647 |
+|               3 | BOLIVAR             |       2147483647 |
++-----------------+---------------------+------------------+
+3 rows in set (0.009 sec)
+
+MariaDB [constructora]> alter table venta add column valor_venta_letras varchar(200);
+Query OK, 0 rows affected (0.009 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [constructora]> select * from venta;
++----------+-------------+----------------+---------------+----------------+--------------------+--------------------+
+| id_venta | valor_venta | valor_recibido | FK_id_cliente | FK_id_inmueble | FK_id_constructora | valor_venta_letras |
++----------+-------------+----------------+---------------+----------------+--------------------+--------------------+
+|        1 |   326000000 |       97800000 |             1 |              1 |                  1 | NULL               |
+|        2 |   215000000 |      215000000 |             2 |              2 |                  2 | NULL               |
+|        3 |   250000000 |      213495000 |             3 |              3 |                  3 | NULL               |
++----------+-------------+----------------+---------------+----------------+--------------------+--------------------+
+3 rows in set (0.001 sec)
+
+MariaDB [constructora]> alter table venta delete column valor_venta_letras;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delete column valor_venta_letras' at line 1
+MariaDB [constructora]> alter table venta drop valor_venta_letras;
+Query OK, 0 rows affected (0.015 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [constructora]> select * from venta;
++----------+-------------+----------------+---------------+----------------+--------------------+
+| id_venta | valor_venta | valor_recibido | FK_id_cliente | FK_id_inmueble | FK_id_constructora |
++----------+-------------+----------------+---------------+----------------+--------------------+
+|        1 |   326000000 |       97800000 |             1 |              1 |                  1 |
+|        2 |   215000000 |      215000000 |             2 |              2 |                  2 |
+|        3 |   250000000 |      213495000 |             3 |              3 |                  3 |
++----------+-------------+----------------+---------------+----------------+--------------------+
+3 rows in set (0.001 sec)
+
+MariaDB [constructora]>
+Microsoft Windows [Versión 10.0.22621.3447]
+(c) Microsoft Corporation. Todos los derechos reservados.
+
+C:\Users\santi>cd..
+
+C:\Users>cd..
+
+C:\>dir
+ El volumen de la unidad C es Windows
+ El número de serie del volumen es: A025-E3A0
+
+ Directorio de C:\
+
+07/05/2022  12:24 a. m.    <DIR>          PerfLogs
+21/05/2024  08:15 p. m.    <DIR>          Program Files
+21/05/2024  09:05 p. m.    <DIR>          Program Files (x86)
+08/08/2023  11:36 p. m.    <DIR>          SQL2022
+04/01/2023  06:45 p. m.    <DIR>          SWSetup
+07/10/2022  05:51 a. m.    <DIR>          Users
+23/05/2024  07:43 p. m.    <DIR>          Windows
+08/04/2023  08:49 p. m.    <DIR>          xampp
+               0 archivos              0 bytes
+               8 dirs  143.003.140.096 bytes libres
+
+C:\>xampp
+"xampp" no se reconoce como un comando interno o externo,
+programa o archivo por lotes ejecutable.
+
+C:\>cd xampp
+
+C:\xampp>cd mysql
+
+C:\xampp\mysql>cd bin
+
+C:\xampp\mysql\bin>mysql -u root -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 9
+Server version: 10.4.27-MariaDB mariadb.org binary distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> use constructora;
+Database changed
+MariaDB [constructora]> show databases;
++---------------------+
+| Database            |
++---------------------+
+| base_concesionario  |
+| base_libros         |
+| base_peliculas      |
+| concesionario       |
+| constructora        |
+| fabrica             |
+| information_schema  |
+| inmobiliaria        |
+| inventario bar m&s  |
+| inventarioventas    |
+| lugares             |
+| municipios          |
+| mysql               |
+| performance_schema  |
+| phpmyadmin          |
+| proyecto_final      |
+| prueba              |
+| pruebaok            |
+| sistemadeventas     |
+| sistemainmobiliaria |
+| test                |
+| venta_vehiculos     |
++---------------------+
+22 rows in set (0.001 sec)
+
+MariaDB [constructora]> desc constructora;
++---------------------+-------------+------+-----+---------+-------+
+| Field               | Type        | Null | Key | Default | Extra |
++---------------------+-------------+------+-----+---------+-------+
+| id_constructora     | int(11)     | NO   | PRI | NULL    |       |
+| nombre_constructora | varchar(20) | NO   |     | NULL    |       |
+| nit_constructora    | int(11)     | NO   |     | NULL    |       |
++---------------------+-------------+------+-----+---------+-------+
+3 rows in set (0.023 sec)
+
+MariaDB [constructora]> select * from cliente;
++------------+---------------------------------+----------------+------------------+---------------+------------+
+| id_cliente | nombre_cliente                  | tipo_documento | numero_documento | estado_civil  | cualquiera |
++------------+---------------------------------+----------------+------------------+---------------+------------+
+|          1 | Santiago Vega                   | CC             |         10101010 | SOLTERO       | NULL       |
+|          2 | ANDRES FELIPE RODRIGUEZ MICOLTA | CC             |         80135124 | SOLTERO       | NULL       |
+|          3 | ANDRES FELIPE RODRIGUEZ MICOLTA | CE             |           787412 | SOLTERO       | NULL       |
+|          4 | ELKIN GONZALEZ                  | CC             |         12234556 | CASADO        | NULL       |
+|          5 | CRISTIAN ROMERO                 | CC             |           457898 | CASADO        | NULL       |
+|          6 | NICOLAS VEGA                    | CC             |           748596 | SOLTERO       | NULL       |
+|          7 | JUAN BERNAL                     | CE             |           784512 | UNION MARITAL | NULL       |
+|          8 | JUANITA PEREZ                   | CC             |         31466464 | UNION MARITAL | NULL       |
++------------+---------------------------------+----------------+------------------+---------------+------------+
+8 rows in set (0.000 sec)
+
+MariaDB [constructora]> select * from prorrata;
++-------------+----------------+-------------------------------------------------------------+
+| id_prorrata | valor_prorrata | valor_prorrata_letra                                        |
++-------------+----------------+-------------------------------------------------------------+
+|           1 |        2941500 | DOS MILLONES NOVECIENTOS CUARENTA Y UN MIL QUINIENTOS PESOS |
+|           2 |        2941500 | DOS MILLONES NOVECIENTOS CUARENTA Y UN MIL QUINIENTOS PESOS |
+|           3 |        2941500 | DOS MILLONES NOVECIENTOS CUARENTA Y UN MIL QUINIENTOS PESOS |
++-------------+----------------+-------------------------------------------------------------+
+3 rows in set (0.000 sec)
+
+MariaDB [constructora]> select * from constructora;
++-----------------+---------------------+------------------+
+| id_constructora | nombre_constructora | nit_constructora |
++-----------------+---------------------+------------------+
+|               1 | DGRD                |       2147483647 |
+|               2 | AMARILO             |       2147483647 |
+|               3 | BOLIVAR             |       2147483647 |
++-----------------+---------------------+------------------+
+3 rows in set (0.001 sec)
+
+MariaDB [constructora]> select * from inmueble;
++-------------+------------------+-------------+------------------------------------------------------------------+----------------+
+| id_inmueble | numero_aptasuite | coeficiente | linderos                                                         | FK_id_prorrata |
++-------------+------------------+-------------+------------------------------------------------------------------+----------------+
+|           1 | 1523             |         164 |  Área construida total: CUARENTA Y TRES METROS CUADRADOS (43 M²) |              1 |
+|           2 | 1331             |         164 |  Área construida total: CUARENTA Y TRES METROS CUADRADOS (43 M²) |              2 |
+|           3 | 822              |         164 |  Área construida total: CUARENTA Y TRES METROS CUADRADOS (43 M²) |              3 |
++-------------+------------------+-------------+------------------------------------------------------------------+----------------+
+3 rows in set (0.001 sec)
+
+MariaDB [constructora]> select * from venta;
++----------+-------------+----------------+---------------+----------------+--------------------+------------+
+| id_venta | valor_venta | valor_recibido | FK_id_cliente | FK_id_inmueble | FK_id_constructora | cualquiera |
++----------+-------------+----------------+---------------+----------------+--------------------+------------+
+|        1 |   326000000 |       97800000 |             1 |              1 |                  1 | NULL       |
+|        2 |   215000000 |      215000000 |             2 |              2 |                  2 | NULL       |
+|        3 |   250000000 |      213495000 |             3 |              3 |                  3 | NULL       |
++----------+-------------+----------------+---------------+----------------+--------------------+------------+
+3 rows in set (0.001 sec)
